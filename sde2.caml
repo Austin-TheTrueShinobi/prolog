@@ -1,0 +1,71 @@
+(*SDE2 Spring 2022 Ocaml
+ Austin Briley
+ ECE 3520
+*)
+
+(*------FUNCTION 1: First Duplicate in a List------*) 
+
+let rec check_index_with_current_list = function
+    ([], x) -> -10000 (*return if empty*)
+  | (list, x) -> (*return value at head if duplicate is found at current list*)
+      if x == List.hd list then 
+        x
+      else check_index_with_current_list(List.tl list, x);;
+
+
+let rec first_duplicate = function
+    ([]) -> -10000 (*return if empty*)
+  | (list) -> (*call helper with head*)
+      if check_index_with_current_list(List.tl list, List.hd list) != -10000 then 
+        List.hd list
+      else first_duplicate(List.tl list);; 
+
+
+(*---FUNCTION 2: First Non-Repeating Element in a List---*) 
+
+let rec find_nonrepeating = function 
+  |([], _, _) -> -10000 
+  | (h::t, check_var, left_list) -> (*shift list to the right*)
+      if (List.mem (check_var) (h::t)) || (List.mem (check_var) (left_list)) then 
+        find_nonrepeating(t, h, check_var::left_list) 
+      else check_var 
+;;
+
+
+let rec first_nonrepeating = function
+    ([]) -> -10000(*return if empty*)
+  | (list) -> find_nonrepeating(List.tl list, List.hd list, []);;
+
+
+(*---FUNCTION 3: The Sum of 2 Problem---*)
+
+let rec check_first_index_with_current_list = function
+    ([], _, _) -> false (*return if empty*)
+  | (list2, check_var, x) -> (*return value at head if duplicate is found at current list*) 
+      if check_var+List.hd list2 == x then 
+        true
+      else check_first_index_with_current_list(List.tl list2, check_var, x);;
+
+
+let rec sumOfTwo = function
+    ([], _, _) -> false (*return if empty*)
+  | (list1, list2, sum) ->  (*call helper with head*)
+      if check_first_index_with_current_list(list2, List.hd list1, sum) != false then 
+        true
+      else sumOfTwo(List.tl list1, list2, sum);;
+
+
+(*---FUNCTION 4: CYK Parsing Algorithm-Inspired Problem---*) 
+
+let rec check_first_index_with_current_list_cyk = function 
+    ((static_num, change_var, list)) -> (*return list of tuple at each start index*) 
+      if change_var+1 == static_num then 
+        (static_num-change_var, change_var)::list
+      else check_first_index_with_current_list_cyk(static_num, change_var+1,(static_num-change_var, change_var)::list);;
+
+
+let rec cyk_sublists = function
+    (num) -> 
+      if num > 1 then 
+        check_first_index_with_current_list_cyk(num, 1, []) 
+      else [];;
